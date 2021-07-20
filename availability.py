@@ -133,59 +133,59 @@ class Scrapper:
             station_list_size = 0
 
 
-        # if (station_list_size >= 50):
-        #     return [True, ne_lat, ne_lon, sw_lat, sw_lon]
-        # else:
-        if (station_list_size != 0):
-            output = []
-            for x in range(0, len(data["station_list"]["summaries"])):
-                lat = data["station_list"]["summaries"][x]["lat"]
-                lon = data["station_list"]["summaries"][x]["lon"]
-                available_port = data["station_list"]["summaries"][x]["port_count"]["available"]
-                total_port = data["station_list"]["summaries"][x]["port_count"]["total"]
-                availability = str(available_port) + ":" + str(total_port)
-                try:
-                    station_status = str(data["station_list"]["summaries"][x]["station_status"])
-                except: 
-                    station_status = "Not Specified"
+        if (station_list_size >= 50):
+            return [True, ne_lat, ne_lon, sw_lat, sw_lon]
+        else:
+            if (station_list_size != 0):
+                output = []
+                for x in range(0, len(data["station_list"]["summaries"])):
+                    lat = data["station_list"]["summaries"][x]["lat"]
+                    lon = data["station_list"]["summaries"][x]["lon"]
+                    available_port = data["station_list"]["summaries"][x]["port_count"]["available"]
+                    total_port = data["station_list"]["summaries"][x]["port_count"]["total"]
+                    availability = str(available_port) + ":" + str(total_port)
+                    try:
+                        station_status = str(data["station_list"]["summaries"][x]["station_status"])
+                    except: 
+                        station_status = "Not Specified"
+                        
+                    try:
+                        station_power_shed_status = str(data["station_list"]["summaries"][x]["station_power_shed_status"])
+                    except: 
+                        station_power_shed_status = "Not Specified"
+                        
+                    try:
+                        device_id = str(data["station_list"]["summaries"][x]["device_id"])
+                    except: 
+                        device_id = "Not Specified"
                     
-                try:
-                    station_power_shed_status = str(data["station_list"]["summaries"][x]["station_power_shed_status"])
-                except: 
-                    station_power_shed_status = "Not Specified"
+                    try:
+                        address = str(data["station_list"]["summaries"][x]["address"])
+                    except: 
+                        address = "Not Specified"
                     
-                try:
-                    device_id = str(data["station_list"]["summaries"][x]["device_id"])
-                except: 
-                    device_id = "Not Specified"
-                
-                try:
-                    address = str(data["station_list"]["summaries"][x]["address"])
-                except: 
-                    address = "Not Specified"
-                
-                try:
-                    station_name = str(data["station_list"]["summaries"][x]["station_name"])
-                except: 
-                    station_name = "Not Specified"
-                
-                try:
-                    connected = str(data["station_list"]["summaries"][x]["is_connected"])
-                except: 
-                    connected = "Not Specified"
-                try:
-                    fee = str(data["station_list"]["summaries"][x]["estimated_fee"])
-                except:
-                    fee = "Not Specified"
-                try:
-                    level = list(data["station_list"]["summaries"][x]["map_data"].keys())[0]
-                except:
-                    level = "Not Specified"
-                output.append([lat, lon, total_port, level, availability, 
-                               fee, connected, station_name, address, 
-                               device_id, station_power_shed_status,
-                               station_status])
-            return output
+                    try:
+                        station_name = str(data["station_list"]["summaries"][x]["station_name"])
+                    except: 
+                        station_name = "Not Specified"
+                    
+                    try:
+                        connected = str(data["station_list"]["summaries"][x]["is_connected"])
+                    except: 
+                        connected = "Not Specified"
+                    try:
+                        fee = str(data["station_list"]["summaries"][x]["estimated_fee"])
+                    except:
+                        fee = "Not Specified"
+                    try:
+                        level = list(data["station_list"]["summaries"][x]["map_data"].keys())[0]
+                    except:
+                        level = "Not Specified"
+                    output.append([lat, lon, total_port, level, availability, 
+                                   fee, connected, station_name, address, 
+                                   device_id, station_power_shed_status,
+                                   station_status])
+                return output
 
 
     def getInfo(self,ne_lat, ne_lon, sw_lat, sw_lon):
@@ -288,34 +288,34 @@ class Scrapper:
 def run():
     S = Scrapper()
     #S.taskManager(51.522764, -113.402441, 49.003905, -123.320867)
-    # S.taskManager(60.042299, -102.0935, 46.503905, -123.320867)
+    S.taskManager(60.042299, -102.0935, 46.503905, -123.320867)
     # S.taskManager(49.331702291033785, -123.06885393341035, 49.32638707912375, -123.08162885850105)
-    S.taskManager(49.314549, -123.027079, 49.185826, -123.310445)
+    # S.taskManager(49.314549, -123.027079, 49.185826, -123.310445)
     S.paint()
     S.saveToDBbyTime()
     # S.saveToMySQLbyTime()
 
-start_time = time.time()
-run()
-print(time.time()-start_time)
+# start_time = time.time()
+# run()
+# print(time.time()-start_time)
 # scheduler = BlockingScheduler()
 # scheduler.add_job(run, 'interval', minutes = 30)
 # scheduler.start()
 
-# import datetime as dt
-# samplingTime = 60*10
+import datetime as dt
+samplingTime = 60*10
 
-# starttime=time.time()
+starttime=time.time()
 
-# while True:
-#     time.sleep(samplingTime - 
-#               ((time.time() - starttime) % samplingTime)) #sleep for 15 mins
+while True:
+    time.sleep(samplingTime - 
+              ((time.time() - starttime) % samplingTime)) #sleep for 15 mins
     
-#     try:
-#         run()
+    try:
+        run()
         
-#     except Exception as e:
-#         curr = dt.datetime.now()
-#         print('{time} - {text} - {args}'.format(time=curr.strftime('%Y-%m-%d %H:%M:%S'), text=str(e), args=e.args))
+    except Exception as e:
+        curr = dt.datetime.now()
+        print('{time} - {text} - {args}'.format(time=curr.strftime('%Y-%m-%d %H:%M:%S'), text=str(e), args=e.args))
         
         
