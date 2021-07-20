@@ -109,7 +109,7 @@ class Scrapper:
             else:
                 if each != None:
                     for x in each:
-                        self.geoinfo[(x[0], x[1])] = [x[2], x[3], x[4]]
+                        self.geoinfo[(x[0], x[1])] = x[2:]
 
     def scrapper(self, arr):
         '''
@@ -145,25 +145,36 @@ class Scrapper:
                 total_port = data["station_list"]["summaries"][x]["port_count"]["total"]
                 availability = str(available_port) + ":" + str(total_port)
                 try:
-                    address = list(data["station_list"]["summaries"][x]["address"])
+                    station_status = str(data["station_list"]["summaries"][x]["station_status"])
                 except: 
-                    address = "Not Specified"
+                    station_status = "Not Specified"
+                    
                 try:
-                    address = list(data["station_list"]["summaries"][x]["address"])
+                    station_power_shed_status = str(data["station_list"]["summaries"][x]["station_power_shed_status"])
+                except: 
+                    station_power_shed_status = "Not Specified"
+                    
+                try:
+                    device_id = str(data["station_list"]["summaries"][x]["device_id"])
+                except: 
+                    device_id = "Not Specified"
+                
+                try:
+                    address = str(data["station_list"]["summaries"][x]["address"])
                 except: 
                     address = "Not Specified"
                 
                 try:
-                    station_name = list(data["station_list"]["summaries"][x]["station_name"])
+                    station_name = str(data["station_list"]["summaries"][x]["station_name"])
                 except: 
                     station_name = "Not Specified"
                 
                 try:
-                    connected = list(data["station_list"]["summaries"][x]["is_connected"])
+                    connected = str(data["station_list"]["summaries"][x]["is_connected"])
                 except: 
                     connected = "Not Specified"
                 try:
-                    fee = list(data["station_list"]["summaries"][x]["estimated_fee"])
+                    fee = str(data["station_list"]["summaries"][x]["estimated_fee"])
                 except:
                     fee = "Not Specified"
                 try:
@@ -171,7 +182,9 @@ class Scrapper:
                 except:
                     level = "Not Specified"
                 output.append([lat, lon, total_port, level, availability, 
-                               fee, connected, station_name])
+                               fee, connected, station_name, address, 
+                               device_id, station_power_shed_status,
+                               station_status])
             return output
 
 
@@ -222,8 +235,18 @@ class Scrapper:
         conn = sqlite3.connect(os.path.join(os.pardir, "databases\\10_min_2021.db"))
         geoinfo = self.modify()
         c = conn.cursor()
-        c.execute('''CREATE TABLE IF NOT EXISTS %s (lat float ,lon float, port int, level text, availability, PRIMARY KEY (lat, lon))''' %t)
-        c.executemany("INSERT INTO %s (lat, lon, port, level, availability) VALUES (?, ?, ?, ?, ?)" %t, geoinfo)
+        c.execute('''CREATE TABLE IF NOT EXISTS %s (lat float ,lon float, \
+                  port int, level text, availability, \
+                      fee, connected, station_name, address, \
+                               device_id, station_power_shed_status, \
+                               station_status, PRIMARY KEY (lat, lon))''' %t)
+            
+        c.executemany("INSERT INTO %s (lat, lon, port, level, availability, fee, connected, station_name, address, device_id, station_power_shed_status, station_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)" %t, geoinfo)
+            
+        #  c.execute('''CREATE TABLE IF NOT EXISTS %s (lat float ,lon float, \
+        #           port int, level text, availability, \PRIMARY KEY (lat, lon))''' %t)
+        # c.executemany("INSERT INTO %s (lat, lon, port, level, availability) VALUES (?, ?, ?, ?, ?)" %t, geoinfo)
+            
         conn.commit()
         conn.close()
 
@@ -256,7 +279,9 @@ class Scrapper:
         '''
         output = []
         for key in self.geoinfo.keys():
-            output.append((key[0], key[1], self.geoinfo[key][0], self.geoinfo[key][1], self.geoinfo[key][2]))
+            aux = [key[0], key[1]]
+            aux.extend(self.geoinfo[key])
+            output.append(aux)
         return output
 
 
