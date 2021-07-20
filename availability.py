@@ -12,6 +12,8 @@ import time
 from apscheduler.schedulers.blocking import BlockingScheduler
 import datetime
 import mysql.connector
+import os
+
 
 class Scrapper:
 
@@ -131,23 +133,46 @@ class Scrapper:
             station_list_size = 0
 
 
-        if (station_list_size >= 50):
-            return [True, ne_lat, ne_lon, sw_lat, sw_lon]
-        else:
-            if (station_list_size != 0):
-                output = []
-                for x in range(0, len(data["station_list"]["summaries"])):
-                    lat = data["station_list"]["summaries"][x]["lat"]
-                    lon = data["station_list"]["summaries"][x]["lon"]
-                    available_port = data["station_list"]["summaries"][x]["port_count"]["available"]
-                    total_port = data["station_list"]["summaries"][x]["port_count"]["total"]
-                    availability = str(available_port) + ":" + str(total_port)
-                    try:
-                        level = list(data["station_list"]["summaries"][x]["map_data"].keys())[0]
-                    except:
-                        level = "Not Specified"
-                    output.append([lat, lon, total_port, level, availability])
-                return output
+        # if (station_list_size >= 50):
+        #     return [True, ne_lat, ne_lon, sw_lat, sw_lon]
+        # else:
+        if (station_list_size != 0):
+            output = []
+            for x in range(0, len(data["station_list"]["summaries"])):
+                lat = data["station_list"]["summaries"][x]["lat"]
+                lon = data["station_list"]["summaries"][x]["lon"]
+                available_port = data["station_list"]["summaries"][x]["port_count"]["available"]
+                total_port = data["station_list"]["summaries"][x]["port_count"]["total"]
+                availability = str(available_port) + ":" + str(total_port)
+                try:
+                    address = list(data["station_list"]["summaries"][x]["address"])
+                except: 
+                    address = "Not Specified"
+                try:
+                    address = list(data["station_list"]["summaries"][x]["address"])
+                except: 
+                    address = "Not Specified"
+                
+                try:
+                    station_name = list(data["station_list"]["summaries"][x]["station_name"])
+                except: 
+                    station_name = "Not Specified"
+                
+                try:
+                    connected = list(data["station_list"]["summaries"][x]["is_connected"])
+                except: 
+                    connected = "Not Specified"
+                try:
+                    fee = list(data["station_list"]["summaries"][x]["estimated_fee"])
+                except:
+                    fee = "Not Specified"
+                try:
+                    level = list(data["station_list"]["summaries"][x]["map_data"].keys())[0]
+                except:
+                    level = "Not Specified"
+                output.append([lat, lon, total_port, level, availability, 
+                               fee, connected, station_name])
+            return output
 
 
     def getInfo(self,ne_lat, ne_lon, sw_lat, sw_lon):
@@ -193,7 +218,8 @@ class Scrapper:
         # t = time.strftime("time_%H_%M_%S", time.localtime())
         t = datetime.datetime.now()
         t = t.strftime("time_%Y_%m_%d_%H_%M_%S")
-        conn = sqlite3.connect("10_min_2021.db")
+        # conn = sqlite3.connect("10_min_2021.db")#os.path.join(os.pardir, "databases\\10_min_2021.db")
+        conn = sqlite3.connect(os.path.join(os.pardir, "databases\\10_min_2021.db"))
         geoinfo = self.modify()
         c = conn.cursor()
         c.execute('''CREATE TABLE IF NOT EXISTS %s (lat float ,lon float, port int, level text, availability, PRIMARY KEY (lat, lon))''' %t)
