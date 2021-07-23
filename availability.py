@@ -242,7 +242,7 @@ class Scrapper:
         t = datetime.datetime.now()
         t = t.strftime("time_%Y_%m_%d_%H_%M_%S")
         # conn = sqlite3.connect("10_min_2021.db")#os.path.join(os.pardir, "databases\\10_min_2021.db")
-        conn = sqlite3.connect(os.path.join(os.pardir, "databases\\10_min_2021.db"))
+        conn = sqlite3.connect(os.path.join(os.pardir, "10_min_2021.db"))
         geoinfo = self.modify()
         c = conn.cursor()
         c.execute('''CREATE TABLE IF NOT EXISTS %s (lat float ,lon float, \
