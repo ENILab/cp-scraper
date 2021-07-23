@@ -242,7 +242,7 @@ class Scrapper:
         t = datetime.datetime.now()
         t = t.strftime("time_%Y_%m_%d_%H_%M_%S")
         # conn = sqlite3.connect("10_min_2021.db")#os.path.join(os.pardir, "databases\\10_min_2021.db")
-        conn = sqlite3.connect(os.path.join(os.pardir, "databases\\10_min_2021.db"))
+        conn = sqlite3.connect(os.path.join(os.pardir, "10_min_2021.db"))
         geoinfo = self.modify()
         c = conn.cursor()
         c.execute('''CREATE TABLE IF NOT EXISTS %s (lat float ,lon float, \
@@ -301,9 +301,9 @@ class Scrapper:
 def run():
     S = Scrapper()
     # S.taskManager(51.522764, -113.402441, 49.003905, -123.320867)
-    # S.taskManager(60.042299, -102.0935, 46.503905, -123.320867)
+    S.taskManager(60.042299, -102.0935, 46.503905, -123.320867)
     # S.taskManager(49.331702291033785, -123.06885393341035, 49.32638707912375, -123.08162885850105)
-    S.taskManager(49.314549, -123.027079, 49.185826, -123.310445)
+    # S.taskManager(49.314549, -123.027079, 49.185826, -123.310445)
     S.paint()
     S.saveToDBbyTime()
     # S.saveToMySQLbyTime()
