@@ -308,27 +308,27 @@ def run():
     S.saveToDBbyTime()
     # S.saveToMySQLbyTime()
 
-# start_time = time.time()
-# run()
-# print(time.time()-start_time)
+start_time = time.time()
+run()
+print(time.time()-start_time)
 # scheduler = BlockingScheduler()
 # scheduler.add_job(run, 'interval', minutes = 30)
 # scheduler.start()
 
-import datetime as dt
-samplingTime = 60*10
+# import datetime as dt
+# samplingTime = 60*10
 
-starttime=time.time()
+# starttime=time.time()
 
-while True:
-    time.sleep(samplingTime - 
-              ((time.time() - starttime) % samplingTime)) #sleep for 15 mins
+# while True:
+#     time.sleep(samplingTime - 
+#               ((time.time() - starttime) % samplingTime)) #sleep for 15 mins
     
-    try:
-        run()
+#     try:
+#         run()
         
-    except Exception as e:
-        curr = dt.datetime.now()
-        print('{time} - {text} - {args}'.format(time=curr.strftime('%Y-%m-%d %H:%M:%S'), text=str(e), args=e.args))
+#     except Exception as e:
+#         curr = dt.datetime.now()
+#         print('{time} - {text} - {args}'.format(time=curr.strftime('%Y-%m-%d %H:%M:%S'), text=str(e), args=e.args))
         
         
