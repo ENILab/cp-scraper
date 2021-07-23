@@ -145,6 +145,14 @@ class Scrapper:
                     total_port = data["station_list"]["summaries"][x]["port_count"]["total"]
                     availability = str(available_port) + ":" + str(total_port)
                     try:
+                        port_type_info = str(data["station_list"]["port_type_info"])
+                    except: 
+                        port_type_info = "Not Specified"
+                    try:
+                        port_type_count = str(data["station_list"]["summaries"][x]["port_type_count"])
+                    except: 
+                        port_type_count = "Not Specified"
+                    try:
                         station_status = str(data["station_list"]["summaries"][x]["station_status"])
                     except: 
                         station_status = "Not Specified"
@@ -184,7 +192,9 @@ class Scrapper:
                     output.append([lat, lon, total_port, level, availability, 
                                    fee, connected, station_name, address, 
                                    device_id, station_power_shed_status,
-                                   station_status])
+                                   station_status, port_type_count,
+                                   port_type_info])                
+                
                 return output
 
 
@@ -239,9 +249,12 @@ class Scrapper:
                   port int, level text, availability, \
                       fee, connected, station_name, address, \
                                device_id, station_power_shed_status, \
-                               station_status, PRIMARY KEY (lat, lon))''' %t)
+                               station_status, port_type_count, port_type_info, PRIMARY KEY (lat, lon))''' %t)
             
-        c.executemany("INSERT INTO %s (lat, lon, port, level, availability, fee, connected, station_name, address, device_id, station_power_shed_status, station_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)" %t, geoinfo)
+        c.executemany("INSERT INTO %s (lat, lon, port, level, availability, \
+                      fee, connected, station_name, address, device_id, \
+                          station_power_shed_status, station_status, \
+                              port_type_count, port_type_info) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)" %t, geoinfo)
             
         #  c.execute('''CREATE TABLE IF NOT EXISTS %s (lat float ,lon float, \
         #           port int, level text, availability, \PRIMARY KEY (lat, lon))''' %t)
@@ -287,10 +300,10 @@ class Scrapper:
 
 def run():
     S = Scrapper()
-    #S.taskManager(51.522764, -113.402441, 49.003905, -123.320867)
-    S.taskManager(60.042299, -102.0935, 46.503905, -123.320867)
+    # S.taskManager(51.522764, -113.402441, 49.003905, -123.320867)
+    # S.taskManager(60.042299, -102.0935, 46.503905, -123.320867)
     # S.taskManager(49.331702291033785, -123.06885393341035, 49.32638707912375, -123.08162885850105)
-    # S.taskManager(49.314549, -123.027079, 49.185826, -123.310445)
+    S.taskManager(49.314549, -123.027079, 49.185826, -123.310445)
     S.paint()
     S.saveToDBbyTime()
     # S.saveToMySQLbyTime()
