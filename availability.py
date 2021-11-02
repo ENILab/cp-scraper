@@ -304,7 +304,7 @@ def run():
     S.taskManager(60.042299, -102.0935, 46.503905, -123.320867)
     # S.taskManager(49.331702291033785, -123.06885393341035, 49.32638707912375, -123.08162885850105)
     # S.taskManager(49.314549, -123.027079, 49.185826, -123.310445)
-    S.paint()
+    # S.paint()
     S.saveToDBbyTime()
     # S.saveToMySQLbyTime()
 
@@ -316,16 +316,16 @@ def run():
 # scheduler.start()
 
 import datetime as dt
-samplingTime = 60*10
+samplingTime2 = 60*1
+samplingTime1 = 60*10 - samplingTime2
 
 starttime=time.time()
 
 while True:
-    time.sleep(samplingTime - 
-              ((time.time() - starttime) % samplingTime)) #sleep for 15 mins
-    
+    time.sleep(samplingTime2-((time.time() - starttime) % samplingTime2))# sleep for 10 mins        
     try:
         run()
+        time.sleep(samplingTime1-((time.time()-starttime)%samplingTime1))# sleep for 10 mins
         
     except Exception as e:
         curr = dt.datetime.now()
